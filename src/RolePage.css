@@ -1,0 +1,59 @@
+.user-type-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+  }
+  
+  .user-type-selection h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 150px;
+    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+  }
+  
+  .image-selection {
+    display: flex;
+    flex-direction: column; /* Change to column for vertical arrangement */
+    justify-content: center; /* Center images vertically */
+    align-items: center; /* Center images horizontally */
+    width: 200px; /* Adjust width as needed */
+  }
+  
+  .user-type-image {
+    width: 100px; /* Adjust width as needed */
+    height: 100px; /* Adjust height as needed */
+    border-radius: 50%; /* Make the image circular */
+    object-fit: cover; /* Maintain aspect ratio and cover the area */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 10px; /* Add spacing between images */
+  }
+  
+  .user-type-image.selected {
+    border: 2px solid #47CA6C; /* Blue border for selected image */
+  }
+  
+  .button {
+    background-color: #47CA6C; /* Green button color */
+    color: #ffffff; /* White text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .button:hover {
+    background-color: #2ca25f; /* Darker green on hover */
+  }
+  
+  .button:disabled {
+    background-color: #ddd; /* Grayed out button for disabled state */
+    cursor: not-allowed;
+  }
+  

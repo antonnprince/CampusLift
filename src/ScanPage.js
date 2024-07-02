@@ -1,85 +1,71 @@
-// Camera.js
-
-import React, { useState, useCallback } from 'react';
-import Webcam from 'react-webcam';
-import { storage } from './firebase.config'; // Import storage from firebase.config
-import { useNavigate } from 'react-router-dom';
-import { CgSpinner } from 'react-icons/cg';
-import './ScanPage.css'; // Import the CSS file
+import React, { useState, useCallback } from "react";
+import { storage } from "./firebase.config"; // Import storage from firebase.config
+import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
+import { CgSpinner } from "react-icons/cg";
+import "./ScanPage.css"; // Import the CSS file
 
 const Camera = ({ user }) => {
-  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null); // State to store the selected file
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
 
-  const webcamRef = React.useRef(null);
+  const handleFileUpload = (e) => {
+    setFile(e.target.files[0]); // Store the selected file in state
+  };
 
-  const capture = useCallback(() => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setImage(imageSrc);
-  }, [webcamRef]);
+  const uploadFile = async () => {
+    if (!file) {
+      toast.error("Please select a file to upload!");
+      return;
+    }
 
-  const uploadImage = async () => {
-    if (image) {
-      setUploading(true);
-      try {
-        const response = await fetch(image);
-        const blob = await response.blob();
-        const ref = storage.ref().child(`images/${user.uid}/${Date.now()}.jpg`); // Access storage and upload image
-        await ref.put(blob);
-        const url = await ref.getDownloadURL();
-        alert('Image uploaded successfully');
-        console.log('Image URL:', url);
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      } finally {
-        setUploading(false);
-        navigate('/'); // Navigate back to home or another route
-      }
+    setUploading(true);
+    try {
+      const { type, name } = file; // Get file type and name
+
+      const storageRef = storage.ref().child(`uploads/${user.uid}/${name}`); // Access storage and upload file
+      await storageRef.put(file);
+
+      const downloadURL = await storageRef.getDownloadURL();
+      console.log("File uploaded successfully:", downloadURL);
+
+      setUploading(false);
+      toast.success("ID Card uploaded successfully!");
+
+      navigate("/RolePage");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setUploading(false);
+      toast.error("Error uploading file. Please try again!");
     }
   };
 
   return (
-    
     <div className="camera-container">
-    <text className='Text'>Upload you college ID Card</text>
+      <p className="text">Upload your college ID Card</p>
       <div className="camera-card">
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          className="camera-preview"
+        <input
+          className="input"
+          type="file"
+          onChange={handleFileUpload}
+          accept="image/*,application/pdf"
+          aria-label="Upload your college ID Card"
         />
         <div className="button-group">
-          <button
-            onClick={capture}
-            className="button"
-          >
-            Capture
+          <button onClick={uploadFile} className="button" disabled={uploading}>
+            {uploading ? (
+              <span>
+                <CgSpinner className="animate-spin inline-block mr-1" />
+                Uploading...
+              </span>
+            ) : (
+              <span>Upload</span>
+            )}
           </button>
-          {image && (
-            <button
-              onClick={uploadImage}
-              className="upload-button"
-              disabled={uploading}
-            >
-              {uploading ? (
-                <span>
-                  <CgSpinner className="animate-spin inline-block mr-1" />
-                  Uploading...
-                </span>
-              ) : (
-                <span>Upload</span>
-              )}
-            </button>
-          )}
         </div>
-        {image && (
-          <div className="mt-4">
-            <img src={image} alt="Captured" className="rounded-lg shadow-md" />
-          </div>
-        )}
       </div>
+      <Toaster />
     </div>
   );
 };

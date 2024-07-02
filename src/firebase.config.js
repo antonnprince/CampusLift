@@ -1,8 +1,7 @@
-// firebase.config.js
-
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -12,12 +11,13 @@ const firebaseConfig = {
   storageBucket: "campuslyft.appspot.com",
   messagingSenderId: "564925939440",
   appId: "1:564925939440:web:0e6dff74b11d83ad1d0c35",
-  measurementId: "G-65F4DVS21Z"
-}
+  measurementId: "G-65F4DVS21Z",
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 // Export Firebase services
 export const auth = getAuth(app);
-export const storage = getStorage(app); // Correct usage of getStorage function
+export const storage = getStorage(app);
+export const firestore = getFirestore(app); // Initialize and export Firestore
