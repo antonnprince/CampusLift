@@ -1,0 +1,58 @@
+.payment-page {
+    font-family: 'Inter', sans-serif;
+    padding: 20px;
+  }
+  
+  .payment-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  h2, h3 {
+    margin-bottom: 20px;
+  }
+  
+  .payment-options, .upi-options {
+    margin-bottom: 20px;
+  }
+  
+  .payment-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .payment-option input {
+    margin-right: 10px;
+  }
+  
+  .payment-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .pay-now-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .low-success {
+    color: red;
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  

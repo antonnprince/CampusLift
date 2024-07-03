@@ -1,54 +1,65 @@
 /* src/map.css */
 
 .map-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f3f4f6;
-  }
-  
-  .search-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .pickupinput {
-    padding: 10px ;
-    margin-top: 15px;
-    border: 1.5px solid #828080;
-    border-radius: 10px;
-    width: 200px;
-    font-weight: 600;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f3f4f6;
+}
 
-  .dropoffinput {
-    padding: 10px;
-    width: 100px;
-    margin-bottom: 15px;
-    margin-top: 15px;
-    border: 1px solid #828080;
-    border-radius: 10px;
-    width: 200px;
-    font-weight: 600;
-  }
-  
-  .button1 {
-    padding: 10px 50px;
-    margin-top: 5px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-  
-  .map {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
-  
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.pickupinput {
+  padding: 10px ;
+  margin-top: 15px;
+  border: 1.5px solid #828080;
+  border-radius: 10px;
+  width: 200px;
+  font-weight: 600;
+}
+
+.dropoffinput {
+  padding: 10px;
+  width: 100px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  border: 1px solid #828080;
+  border-radius: 10px;
+  width: 200px;
+  font-weight: 600;
+}
+
+.button1 {
+  padding: 10px 50px;
+  margin-top: 5px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.button2 {
+  padding: 10px 50px;
+  margin-top: 5px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+.map {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
