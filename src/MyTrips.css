@@ -1,0 +1,116 @@
+.app {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .header {
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .toggle-switch {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  
+  .toggle-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 29px;
+    background: #F2F2F2;
+    box-shadow: 0px 4px 41px 0px rgba(189, 192, 201, 0.25);
+    border: none;
+    outline: none;
+    flex: 1;
+    width: 338px;
+    height: 53px;
+    flex-shrink: 0;
+  }
+  
+  .toggle-button.active {
+    border-radius: 29px;
+    background: #FFF;
+    box-shadow: 0px 4px 41px 0px rgba(189, 192, 201, 0.25);
+    font-weight: bold;
+  }
+  
+  .main {
+    margin-top: 20px;
+  }
+  
+  .profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+  
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .trip-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .trip-card .status {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .trip-card .locations {
+    margin-bottom: 10px;
+  }
+  
+  .trip-card .map-placeholder {
+    height: 100px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+  }
+  
+  .cancel-btn, .add-stops-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .cancel-btn {
+    background-color: #ff4d4d;
+    color: white;
+  }
+  
+  .add-stops-btn {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .done .status {
+    color: #4caf50;
+  }
+  
+  .canceled .status {
+    color: #ff4d4d;
+  }
+  .header h1{
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+  
