@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleMap, LoadScript, DirectionsRenderer } from '@react-google-maps/api';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import "./MapPage.css";
 
 const MapPage = () => {
   const [directions, setDirections] = useState(null);
-  const [pickup, setPickup] = useState('');
-  const [dropoff, setDropoff] = useState('');
+  const [pickup, setPickup] = useState(null);
+  const [dropoff, setDropoff] = useState(null);
   const [duration, setDuration] = useState('');
   const [fare, setFare] = useState(0);
   const navigate = useNavigate();
@@ -17,20 +18,29 @@ const MapPage = () => {
   };
 
   const defaultCenter = {
-    lat: 10.051969, lng: 76.315773
+    lat: 10.051969,
+    lng: 76.315773,
   };
 
-  const Next=()=>{
-    navigate('/success', { state: { pickup, dropoff, fare } });
-  }
+  const onPlaceChangedPickup = (value) => {
+    setPickup(value);
+  };
+
+  const onPlaceChangedDropoff = (value) => {
+    setDropoff(value);
+  };
+
+  const Next = () => {
+    navigate('/success', { state: { pickup: pickup.label, dropoff: dropoff.label, fare } });
+  };
 
   const calculateRoute = () => {
-    if (pickup !== '' && dropoff !== '') {
+    if (pickup && dropoff) {
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
-          origin: pickup,
-          destination: dropoff,
+          origin: pickup.label,
+          destination: dropoff.label,
           travelMode: window.google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
@@ -42,7 +52,6 @@ const MapPage = () => {
               const distanceInMeters = legs[0].distance.value;
               const fare = Math.ceil(distanceInMeters / 150) * 5;
               setFare(fare);
-              
             }
           } else {
             console.error(`error fetching directions ${result}`);
@@ -56,38 +65,45 @@ const MapPage = () => {
     <div style={{ fontFamily: 'Inter', padding: '20px' }}>
       <h1 style={{ fontFamily: 'Inter', fontWeight: 'Bold', fontSize: '30px' }}>Let's start the ride</h1>
 
-      <LoadScript googleMapsApiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0">
+      <LoadScript
+        googleMapsApiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0"
+        libraries={['places']}
+      >
         <GoogleMap
           mapContainerStyle={mapStyles}
           zoom={13}
           center={defaultCenter}
         >
           {directions && (
-            <DirectionsRenderer
-              directions={directions}
-            />
+            <DirectionsRenderer directions={directions} />
           )}
         </GoogleMap>
+        <div>
+          <GooglePlacesAutocomplete
+            apiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0"
+            selectProps={{
+              value: pickup,
+              onChange: onPlaceChangedPickup,
+              placeholder: "Enter Pickup Location",
+            }}
+          />
+          <GooglePlacesAutocomplete
+            apiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0"
+            selectProps={{
+              value: dropoff,
+              onChange: onPlaceChangedDropoff,
+              placeholder: "Enter Dropoff Location",
+            }}
+          />
+        </div>
       </LoadScript>
-      <div>
-        <input className='pickupinput'
-          type="text"
-          placeholder="Enter Pickup Location"
-          value={pickup}
-          onChange={e => setPickup(e.target.value)}
-        />
-        <input className='dropoffinput'
-          type="text"
-          placeholder="Enter Dropoff Location"
-          value={dropoff}
-          onChange={e => setDropoff(e.target.value)}
-        />
-      </div>
       <button onClick={calculateRoute} className='button1'>Calculate Route</button>
       {duration && <div>Estimated Time: {duration}</div>}
-      <button className='button2' onClick={Next}>Confirm Ride</button>
+      <button className='button2' onClick={Next} disabled={!pickup || !dropoff}>Confirm Ride</button>
     </div>
   );
 };
 
 export default MapPage;
+
+

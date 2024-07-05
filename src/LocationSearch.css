@@ -1,0 +1,30 @@
+.location-search {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .css-yk16xz-control {
+    border: 1px solid #e0e0e0;
+    box-shadow: none;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .selected-location {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+  
+  .selected-location h3 {
+    margin: 0 0 10px;
+  }
+  
+  .selected-location p {
+    margin: 0;
+  }
+  

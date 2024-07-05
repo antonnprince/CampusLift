@@ -15,8 +15,7 @@ const Home = () => {
           <img 
             src={`${process.env.PUBLIC_URL}/mapMarkerIcon.svg`} 
             alt="Map Marker" 
-            className="map-marker"
-          />
+            className="map-marker"/>
         </div>
         <div className="content-section flex-1 flex flex-col items-center justify-center relative">
           <img src={scooterImage} alt="Scooter Delivery" className="scooter-image" />
