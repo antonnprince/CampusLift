@@ -9,11 +9,9 @@ import Home from "./Home";
 import SignIn from "./SignIn";
 import Camera from "./ScanPage";
 import UserTypeSelection from "./RolePage";
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import MapPage from './MapPage';
-import SuccessPage from './SuccessPage';
-import PaymentPage from './PaymentPage';
+import MapPage from "./MapPage";
+import SuccessPage from "./SuccessPage";
+import PaymentPage from "./PaymentPage";
 
 const App = () => {
   useEffect(() => {
@@ -41,8 +39,9 @@ const App = () => {
         <Route path="/RolePage" element={<UserTypeSelection />} />
         <Route path="/" element={<MapPage />} />
         <Route path="/success" element={<SuccessPage />} />
-        <Route path="/payment" element={<PaymentPage/>}/>
+        <Route path="/payment" element={<PaymentPage />} />
       </Routes>
     </Router>
   );
-}
+};
+export default App;
