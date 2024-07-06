@@ -33,7 +33,20 @@ const MapPage = () => {
   const Next = () => {
     navigate('/success', { state: { pickup: pickup.label, dropoff: dropoff.label, fare } });
   };
+  const calculateFare = (distance, duration) => {
+    const baseFare = 10; // Base fare in currency units
+    const costPerKm = 2; // Cost per kilometer in currency units
+    const costPerMinute = 1; // Cost per minute in currency units
+    const rushHourMultiplier = 1.5; // Rush hour multiplier
 
+    // Assuming rush hours are between 9-11 AM and 1-6 PM
+    const currentHour = new Date().getHours();
+    const isRushHour = (currentHour >= 9 && currentHour <= 11) || (currentHour >= 15 && currentHour <= 18);
+
+    const fare = baseFare + (distance / 1000) * costPerKm + (duration / 60) * costPerMinute;
+
+    return isRushHour ? fare * rushHourMultiplier : fare;
+  };
   const calculateRoute = () => {
     if (pickup && dropoff) {
       const directionsService = new window.google.maps.DirectionsService();
