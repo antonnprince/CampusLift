@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleMap, LoadScript, DirectionsRenderer } from '@react-google-maps/api';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
@@ -16,11 +16,13 @@ const MapPage = () => {
     height: "64vh",
     width: "100%",
   };
-
   const defaultCenter = {
-    lat: 10.051969,
-    lng: 76.315773,
+    lat: 10.042515310682658,
+    lng: 76.32844361074093
+    ,
   };
+
+  const MAX_RADIUS = 3; // Maximum radius in kilometers
 
   const onPlaceChangedPickup = (value) => {
     setPickup(value);
@@ -31,24 +33,44 @@ const MapPage = () => {
   };
 
   const Next = () => {
-    navigate('/success', { state: { pickup: pickup.label, dropoff: dropoff.label, fare } });
+    navigate('/success', { state: { pickup: pickup?.label, dropoff: dropoff?.label, fare } });
   };
-  const calculateFare = (distance, duration) => {
+
+  const calculateFare = (distanceInMeters, durationInSeconds) => {
     const baseFare = 10; // Base fare in currency units
     const costPerKm = 2; // Cost per kilometer in currency units
     const costPerMinute = 1; // Cost per minute in currency units
     const rushHourMultiplier = 1.5; // Rush hour multiplier
-
-    // Assuming rush hours are between 9-11 AM and 1-6 PM
+  
+    // Assuming rush hours are between 9-11 AM and 3-6 PM
     const currentHour = new Date().getHours();
     const isRushHour = (currentHour >= 9 && currentHour <= 11) || (currentHour >= 15 && currentHour <= 18);
-
-    const fare = baseFare + (distance / 1000) * costPerKm + (duration / 60) * costPerMinute;
-
-    return isRushHour ? fare * rushHourMultiplier : fare;
+  
+    const fare = baseFare + (distanceInMeters / 1000) * costPerKm + (durationInSeconds / 60) * costPerMinute;
+  
+    return Math.ceil(isRushHour ? fare * rushHourMultiplier : fare);
   };
+
+  const haversineDistance = (coords1, coords2) => {
+    const toRad = (value) => (value * Math.PI) / 180;
+    const R = 6371; // Earth radius in kilometers
+
+    const dLat = toRad(coords2.lat - coords1.lat);
+    const dLon = toRad(coords2.lng - coords1.lng);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(coords1.lat)) * Math.cos(toRad(coords2.lat)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+  };
+
+
   const calculateRoute = () => {
-    if (pickup && dropoff) {
+    if (pickup && dropoff && window.google) {
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
@@ -58,28 +80,49 @@ const MapPage = () => {
         },
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
-            setDirections(result);
             const legs = result.routes[0].legs;
             if (legs.length > 0) {
+              const distanceInKm = legs[0].distance.value / 1000; // Convert meters to kilometers
+              
+              if (distanceInKm > MAX_RADIUS) {
+                setDirections(null);
+                setDuration('');
+                setFare(0);
+                alert(`The dropoff location is beyond the allowed radius of ${MAX_RADIUS} kilometers.`);
+                return;
+              }
+  
+              setDirections(result);
               setDuration(legs[0].duration.text);
-              const distanceInMeters = legs[0].distance.value;
-              const fare = Math.ceil(distanceInMeters / 150) * 5;
-              setFare(fare);
+              const durationInSeconds = legs[0].duration.value;
+              const calculatedFare = calculateFare(legs[0].distance.value, durationInSeconds);
+              setFare(calculatedFare);
             }
           } else {
-            console.error(`error fetching directions ${result}`);
+            console.error(`Error fetching directions: ${status}`);
+            setDirections(null);
+            setDuration('');
+            setFare(0);
           }
         }
       );
     }
   };
 
+  useEffect(() => {
+    if (pickup && dropoff) {
+      calculateRoute();
+    }
+  }, [pickup, dropoff]);
+
   return (
     <div style={{ fontFamily: 'Inter', padding: '20px' }}>
       <h1 style={{ fontFamily: 'Inter', fontWeight: 'Bold', fontSize: '30px' }}>Let's start the ride</h1>
 
       <LoadScript
-        googleMapsApiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0"
+        googleMapsApiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
+
+
         libraries={['places']}
       >
         <GoogleMap
@@ -93,7 +136,9 @@ const MapPage = () => {
         </GoogleMap>
         <div>
           <GooglePlacesAutocomplete
-            apiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0"
+            apiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
+
+
             selectProps={{
               value: pickup,
               onChange: onPlaceChangedPickup,
@@ -101,7 +146,7 @@ const MapPage = () => {
             }}
           />
           <GooglePlacesAutocomplete
-            apiKey="AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0"
+            apiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
             selectProps={{
               value: dropoff,
               onChange: onPlaceChangedDropoff,
@@ -112,11 +157,10 @@ const MapPage = () => {
       </LoadScript>
       <button onClick={calculateRoute} className='button1'>Calculate Route</button>
       {duration && <div>Estimated Time: {duration}</div>}
+      {fare > 0 && <div>Estimated Fare: ₹{fare}</div>}
       <button className='button2' onClick={Next} disabled={!pickup || !dropoff}>Confirm Ride</button>
     </div>
   );
 };
 
 export default MapPage;
-
-
