@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { CgSpinner } from 'react-icons/cg';
-import OtpInput from 'otp-input-react';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import { auth } from './firebase.config';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { toast, Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { CgSpinner } from "react-icons/cg";
+import OtpInput from "otp-input-react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { auth } from "./firebase.config";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { toast, Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignIn = () => {
-  const [otp, setOtp] = useState('');
-  const [ph, setPh] = useState('');
+  const [otp, setOtp] = useState("");
+  const [ph, setPh] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [user, setUser] = useState(null);
-
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const onCaptchVerify = () => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
-        'recaptcha-container',
+        "recaptcha-container",
         {
-          size: 'invisible',
+          size: "invisible",
           callback: () => {
             onSignup();
           },
-          'expired-callback': () => {},
+          "expired-callback": () => {},
         },
         auth
       );
@@ -38,14 +38,14 @@ const SignIn = () => {
     onCaptchVerify();
 
     const appVerifier = window.recaptchaVerifier;
-    const formatPh = '+' + ph;
+    const formatPh = "+" + ph;
 
     signInWithPhoneNumber(auth, formatPh, appVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
         setLoading(false);
         setShowOTP(true);
-        toast.success('OTP sent successfully!');
+        toast.success("OTP sent successfully!");
       })
       .catch((error) => {
         console.log(error);
@@ -53,21 +53,41 @@ const SignIn = () => {
       });
   };
 
-  const onOTPVerify = () => {
+  const storePhoneNumber = async (phoneNumber) => {
+    try {
+      const res = await axios.post("http://localhost:3000/login", {
+        phoneNumber: phoneNumber,
+      });
+      return res.status; // Return the status code
+    } catch (error) {
+      console.error("Error storing phone number:", error);
+      throw error;
+    }
+  };
+
+  const onOTPVerify = async () => {
     setLoading(true);
     window.confirmationResult
       .confirm(otp)
-      .then((res) => {
-        // console.log(res);
+      .then(async (res) => {
         setUser(res.user);
-        console.log(user )
-        setLoading(false);
-        localStorage.setItem('user',res.user)
-        navigate('/ScanPage'); // Navigate to camera page upon successful OTP verification
+        try {
+          const status = await storePhoneNumber(ph);
+          setLoading(false);
+          if (status === 200) {
+            navigate("/MapPage"); // Navigate to the map page
+          } else if (status === 203) {
+            navigate("/Userdetails"); // Navigate to the user details page
+          }
+        } catch (error) {
+          setLoading(false);
+          toast.error("Error verifying OTP");
+        }
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
+        toast.error("Invalid OTP");
       });
   };
 
@@ -77,7 +97,10 @@ const SignIn = () => {
       <div id="recaptcha-container"></div>
       {showOTP ? (
         <>
-          <label htmlFor="otp" className="font-bold text-4xl text-black text-center mt-20">
+          <label
+            htmlFor="otp"
+            className="font-bold text-4xl text-black text-center mt-20"
+          >
             Verification
           </label>
           <OtpInput
@@ -86,8 +109,8 @@ const SignIn = () => {
             OTPLength={6}
             otpType="number"
             autoFocus
-            className="opt-container rounded-lg p-4 space-x-2" // Reduced padding and spacing
-            inputClassName="rounded-lg border border-gray-300 p-2 text-base" // Adjusted padding and font size
+            className="opt-container rounded-lg p-4 space-x-2"
+            inputClassName="rounded-lg border border-gray-300 p-2 text-base"
           />
           <button
             onClick={onOTPVerify}
@@ -100,9 +123,16 @@ const SignIn = () => {
       ) : (
         <>
           <label className="font-sans font-semibold text-[32px] leading-[44px] text-black text-center py-4 mb-10 whitespace-pre-line">
-            Enter your phone<br />number
+            Enter your phone
+            <br />
+            number
           </label>
-          <PhoneInput country={'in'} value={ph} onChange={setPh} className="w-full mb-6" />
+          <PhoneInput
+            country={"in"}
+            value={ph}
+            onChange={setPh}
+            className="w-full mb-6"
+          />
           <div className="mt-6">
             <button
               onClick={onSignup}
