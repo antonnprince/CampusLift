@@ -6,6 +6,7 @@ import {Server} from 'socket.io'
 import cors from "cors" 
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 let rideRequests=[]
 const httpServer = createServer(app)
@@ -15,6 +16,7 @@ const io = new Server(httpServer, {
         origin:"http://localhost:3001"
     }    
 })
+let ph
 
 const MONGO_URI = "mongodb+srv://prompttest123:antonprince95@cluster0.asiy8fr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
@@ -30,14 +32,15 @@ mongoose.connect(MONGO_URI).then(() => {
 app.post('/login', async (req, res) => {
     try 
     {
-        const user = await AppUser.findOne({phoneNumber:req.body.phoneno})
+        const user = await AppUser.findOne({phoneNumber:req.body.phoneNumber})
         if(user)
             {
                 return res.status(200).json(user)
             }
         else
             {
-                return res.status(404).json({message:"User not found"})
+                ph=req.body.phoneNumber
+                return res.status(203).json({message:"User not found"})
             }
     } 
     catch (error) 
@@ -48,12 +51,13 @@ app.post('/login', async (req, res) => {
 
 app.post('/register',async (req,res)=>{
     const newUser={
-        phoneNumber:req.body.phoneno,
+        phoneNumber:ph,
         name:req.body.name,
         email:req.body.email,
         role:req.body.role,
         department:req.body.department,
         DOB:req.body.DOB
+        // cusatID:req.body.cusatID
     }
 
     await AppUser.create(newUser)

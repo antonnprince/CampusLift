@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import "./Userdetails.css";
-
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
 const Userdetails = () => {
+  const navigate=useNavigate()
   const [formData, setFormData] = useState({
-    Name: "",
-    Email: "",
-    dob: "",
+    // phoneno:123456789,
+    name: "",
+    email: "",
+    DOB: "",
     department: "",
+    role:"P",
+    // cusatID:"aws",
+    // driverLicense:"asd"
   });
 
   const handleChange = (e) => {
@@ -20,25 +26,20 @@ const Userdetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Replace with your backend API URL
-    const apiUrl = "https://your-backend-api.com/store-driver-license";
-
+    // const apiUrl = "http://localhost:3000/register";
+    console.log(formData)
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        console.log("Form submitted successfully!");
-      } else {
-        console.error("Form submission failed!");
-      }
+      const res = await axios.post("http://localhost:3000/register",formData)
+      console.log(res)  
+      
+      if(res.status===200)
+        navigate("/Mappage")
     } catch (error) {
-      console.error("Error:", error);
+      console.log(error)
     }
+    
+    // console.error("Error:", error);
+     
   };
 
   return (
@@ -49,22 +50,22 @@ const Userdetails = () => {
         <h2>Enter your Name</h2>
         <input
           type="text"
-          name="Name"
-          value={formData.Name}
+          name="name"
+          value={formData.name}
           onChange={handleChange}
         />
         <h2>Enter your Email</h2>
         <input
           type="text"
-          name="Email"
-          value={formData.Email}
+          name="email"
+          value={formData.email}
           onChange={handleChange}
         />
         <h2>Enter your Date of birth</h2>
         <input
           type="date"
-          name="dob"
-          value={formData.dob}
+          name="DOB"
+          value={formData.DOB}
           onChange={handleChange}
         />
         <h2>Enter your Department</h2>

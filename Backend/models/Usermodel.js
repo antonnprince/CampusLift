@@ -35,17 +35,36 @@ const TripSchema = mongoose.Schema({
 const AppUserSchema = mongoose.Schema({
     phoneNumber:{
         type:Number,
-        required:true
+        // required:true
     },
 
     name:{
         type:String,
-        required:true
+        // required:true
     },
 
     email:{
         type:String,
-        required:true
+        // required:true
+    },
+
+    department:{
+        type:String,
+        // required:true
+    },
+
+    DOB:{
+        type:String,
+        //required:true
+    },
+
+    cusatID:{
+        type:String,
+        // required:true
+    },
+
+    driverLicense:{
+        type:String,
     },
 
     trips:{

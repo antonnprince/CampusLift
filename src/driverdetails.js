@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import "./driverdetails.css";
+import axios from "axios"
+import { useNavigate } from "react-router-dom";
 
 const DriverDetails = () => {
+  const navigate=useNavigate()
   const [formData, setFormData] = useState({
-    Name: "",
-    Email: "",
-    dob: "",
+    name: "",
+    phoneno:487348, 
+    role:"D",
+    email: "",
+    DOB: "",
     department: "",
-    licenseNumber: "",
+    // licenseNumber: "",
   });
 
   const [licenseFile, setLicenseFile] = useState(null);
@@ -36,18 +41,15 @@ const DriverDetails = () => {
       formDataToSend.append("licenseFile", licenseFile);
     }
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        body: formDataToSend,
-      });
-
-      if (response.ok) {
-        console.log("Form submitted successfully!");
-      } else {
-        console.error("Form submission failed!");
-      }
-    } catch (error) {
+    try{
+      console.log(formData)
+      // const res = await axios.post("http://localhost:3000/register",formData)
+      // console.log(res)
+      
+      // if(res.status===200)
+        navigate("/rider-dashboard")
+    } catch (error) 
+    {
       console.error("Error:", error);
     }
   };
@@ -60,22 +62,22 @@ const DriverDetails = () => {
         <h2>Enter your Name</h2>
         <input
           type="text"
-          name="Name"
+          name="name"
           value={formData.Name}
           onChange={handleChange}
         />
         <h2>Enter your Email</h2>
         <input
           type="email"
-          name="Email"
+          name="email"
           value={formData.Email}
           onChange={handleChange}
         />
         <h2>Enter your Date of birth</h2>
         <input
           type="date"
-          name="dob"
-          value={formData.dob}
+          name="DOB"
+          value={formData.DOB}
           onChange={handleChange}
         />
         <h2>Enter your Department</h2>

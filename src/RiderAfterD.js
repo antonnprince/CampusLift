@@ -1,18 +1,38 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, DirectionsRenderer } from '@react-google-maps/api';
-import axios from 'axios'; // Make sure to install axios: npm install axios
-
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import "./Rider.css"
+    
 const libraries = ["places"];
 
-const RiderLocationTracker = () => {
+const RideafterD = () => {
   const [driverLocation, setDriverLocation] = useState(null);
   const [directions, setDirections] = useState(null);
   const [error, setError] = useState(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
+  const navigate = useNavigate();  // Initialize useNavigate
 
   const pickup = { lat: 10.0439, lng: 76.3249 };
   const dropoff = { lat: 10.0483, lng: 76.3315 };
+
+  const driverPath = [
+    { lat: 10.057597, lng: 76.321678 }, // Initial location
+    { lat: 10.047305720476615, lng: 76.3192038339423 },
+    { lat: 10.047210641772333, lng: 76.31947205485068 },
+    { lat: 10.046798633730784, lng: 76.32045910779357 },
+    { lat: 10.046492268436532, lng: 76.32140324539111 },
+    { lat: 10.046354932175943, lng: 76.3219396872079 },
+    { lat: 10.046238724525262, lng: 76.3222079081163 },
+    { lat: 10.04605913080119, lng: 76.32290528247812 },
+    { lat: 10.045942923044228, lng: 76.32301257084147 },
+    { lat: 10.045953487389331, lng: 76.32313058801417 },
+    { lat: 10.04533019054617, lng: 76.32345245310422 },
+    { lat: 10.045076645723903, lng: 76.32378504703064 },
+    { lat: 10.044590684259068, lng: 76.32442877721078 },
+    { lat: 10.044400525226258, lng: 76.3246111674285 },
+    { lat: 10.044231494881025, lng: 76.3246755404465 },
+  ];
 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0",
@@ -36,32 +56,22 @@ const RiderLocationTracker = () => {
     mapRef.current?.setZoom(15);
   }, []);
 
-  // Function to fetch driver's location from backend
-  const fetchDriverLocation = async () => {
-    try {
-      const response = await axios.get('YOUR_BACKEND_API_URL/driver-location');
-      return response.data; // Assuming the API returns { lat: number, lng: number }
-    } catch (error) {
-      console.error('Error fetching driver location:', error);
-      setError('Failed to fetch driver location');
-      return null;
-    }
-  };
-
-  // Fetch driver's location at regular intervals
+  // Simulate driver movement
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      const newLocation = await fetchDriverLocation();
-      if (newLocation) {
+    let index = 0;
+    const moveDriver = () => {
+      if (index < driverPath.length) {
+        const newLocation = driverPath[index];
         setDriverLocation(newLocation);
         if (markerRef.current) {
           markerRef.current.setPosition(newLocation);
         }
         panTo(newLocation);
+        index++;
+        setTimeout(moveDriver, 2000);
       }
-    }, 5000); // Fetch every 5 seconds
-
-    return () => clearInterval(intervalId); // Cleanup on component unmount
+    };
+    moveDriver();
   }, [panTo]);
 
   const calculateRoute = useCallback(() => {
@@ -101,12 +111,16 @@ const RiderLocationTracker = () => {
     markerRef.current = marker;
   }, []);
 
+  const handleStartRide = () => {
+    navigate('/rider-dashboard');  // Navigate to RiderAfter.js
+  };
+
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading maps";
 
   return (
     <div className='Map-container'>
-      <h1>Your Lift is on the way..</h1>
+      <h1>Your Ride After..</h1>
       <div className='gmap-container'>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
@@ -134,17 +148,18 @@ const RiderLocationTracker = () => {
       <div className='trip-info'>
         <h2>Trip Details</h2>
         <div className='location-info'>
-          <p><strong>Pickup:</strong> {pickup.lat.toFixed(4)}, {pickup.lng.toFixed(4)}</p>
-          <p><strong>Dropoff:</strong> {dropoff.lat.toFixed(4)}, {dropoff.lng.toFixed(4)}</p>
+          <p><strong>Pickup:</strong> Seminar Complex, CUSAT</p>
+          <p><strong>Dropoff:</strong> School of Engineering, CUSAT</p>
         </div>
         <div className='rider-info'>
           <h3>Rider Information</h3>
-          <p><strong>Name:</strong> John Doe</p>
-          <p><strong>Phone:</strong> (555) 123-4567</p>
+          <p><strong>Name:</strong> Adil</p>
+          <p><strong>Phone:</strong> 9645176072</p>
         </div>
       </div>
+      <button className= "button" onClick={handleStartRide}>End Ride</button> {/* Add the Start Ride button */}
     </div>
   );
 };
 
-export default RiderLocationTracker;
+export default RideafterD;

@@ -5,13 +5,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB4EiIkKK3aIFbAAWSI0V39ZhN2r-4T9eY",
-  authDomain: "campuslyft.firebaseapp.com",
-  projectId: "campuslyft",
-  storageBucket: "campuslyft.appspot.com",
-  messagingSenderId: "564925939440",
-  appId: "1:564925939440:web:0e6dff74b11d83ad1d0c35",
-  measurementId: "G-65F4DVS21Z",
+  apiKey: "AIzaSyBj3VYWgepIblA1dho69Vn_GQtROhPH8S8",
+  authDomain: "campuslyft-d5896.firebaseapp.com",
+  projectId: "campuslyft-d5896",
+  storageBucket: "campuslyft-d5896.appspot.com",
+  messagingSenderId: "93854783233",
+  appId: "1:93854783233:web",
+  measurementId: "G-62N5G3NK2P"
 };
 
 // Initialize Firebase

@@ -8,7 +8,7 @@
   .user-type-selection h3 {
     font-size: 20px;
     font-weight: bold;
-    margin-top: 150px;
+    margin-top: 190px;
     margin-bottom: 20px;
     flex-direction: column;
     align-items: center;
@@ -20,12 +20,12 @@
     flex-direction: column; /* Change to column for vertical arrangement */
     justify-content: center; /* Center images vertically */
     align-items: center; /* Center images horizontally */
-    width: 200px; /* Adjust width as needed */
+    width: 400px; /* Adjust width as needed */
   }
   
   .user-type-image {
-    width: 100px; /* Adjust width as needed */
-    height: 100px; /* Adjust height as needed */
+    width: 150px; /* Adjust width as needed */
+    height: 150px; /* Adjust height as needed */
     border-radius: 50%; /* Make the image circular */
     object-fit: cover; /* Maintain aspect ratio and cover the area */
     cursor: pointer;
@@ -39,13 +39,13 @@
   
   .button {
     background-color: #47CA6C; /* Green button color */
-    color: #ffffff; /* White text color */
+    color: #fffefe; /* White text color */
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 20px;
+    margin-top: 30px;
   }
   
   .button:hover {
@@ -53,7 +53,7 @@
   }
   
   .button:disabled {
-    background-color: #ddd; /* Grayed out button for disabled state */
+    background-color: #2ca25f; /* Grayed out button for disabled state */
     cursor: not-allowed;
   }
   

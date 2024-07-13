@@ -59,12 +59,12 @@ const PaymentPage = () => {
     } else if (selectedPayment === 'card') {
       navigate('/card-billing');
     } else if (selectedPayment === 'cash') {
-      alert('Please pay the cash amount to the driver.');
-      navigate('/');
+      // alert('Please pay the cash amount to the driver.');
+      navigate('/RiderP');
     } else {
       // Add other payment processing logic here
-      alert('Payment successful!');
-      navigate('/');
+      // alert('Payment successful!');
+      navigate('/RiderP');
     }
   };
 

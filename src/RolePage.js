@@ -12,8 +12,8 @@ const UserTypeSelection = () => {
 
   const handleSubmit = () => {
     const registrationPage = {
-      rider: "/rider-registration",
-      passenger: "/passenger-registration",
+      rider: "/Driverdetails",
+      passenger: "/Userdetails",
     };
 
     if (registrationPage.hasOwnProperty(selectedType)) {

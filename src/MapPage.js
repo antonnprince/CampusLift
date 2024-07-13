@@ -4,12 +4,16 @@ import { GoogleMap, LoadScript, DirectionsRenderer } from '@react-google-maps/ap
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import "./MapPage.css";
 
+
 const MapPage = () => {
   const [directions, setDirections] = useState(null);
   const [pickup, setPickup] = useState(null);
   const [dropoff, setDropoff] = useState(null);
+  const [pickupCoords, setPickupCoords] = useState(null);
+  const [dropoffCoords, setDropoffCoords] = useState(null);
   const [duration, setDuration] = useState('');
   const [fare, setFare] = useState(0);
+ 
   const navigate = useNavigate();
 
   const mapStyles = {
@@ -18,22 +22,44 @@ const MapPage = () => {
   };
   const defaultCenter = {
     lat: 10.042515310682658,
-    lng: 76.32844361074093
-    ,
+    lng: 76.32844361074093,
   };
 
   const MAX_RADIUS = 3; // Maximum radius in kilometers
 
   const onPlaceChangedPickup = (value) => {
     setPickup(value);
+    getCoordinates(value.label, setPickupCoords);
   };
 
   const onPlaceChangedDropoff = (value) => {
     setDropoff(value);
+    getCoordinates(value.label, setDropoffCoords);
   };
 
+  const getCoordinates = (address, setCoords) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: address }, (results, status) => {
+      if (status === 'OK') {
+        const { lat, lng } = results[0].geometry.location;
+        setCoords({ lat: lat(), lng: lng() });
+      } else {
+        console.error('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  };
+ 
   const Next = () => {
-    navigate('/success', { state: { pickup: pickup?.label, dropoff: dropoff?.label, fare } });
+    navigate('/success', { 
+      state: { 
+        pickup: pickup?.label, 
+        dropoff: dropoff?.label, 
+        pickupCoords,
+        dropoffCoords,
+        fare 
+      } 
+    });
+
   };
 
   const calculateFare = (distanceInMeters, durationInSeconds) => {
@@ -68,21 +94,20 @@ const MapPage = () => {
     return R * c;
   };
 
-
   const calculateRoute = () => {
-    if (pickup && dropoff && window.google) {
+    if (pickup && dropoff && pickupCoords && dropoffCoords && window.google) {
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
-          origin: pickup.label,
-          destination: dropoff.label,
+          origin: pickupCoords,
+          destination: dropoffCoords,
           travelMode: window.google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             const legs = result.routes[0].legs;
             if (legs.length > 0) {
-              const distanceInKm = legs[0].distance.value / 1000; // Convert meters to kilometers
+              const distanceInKm = legs[0].distance.value / 1000;
               
               if (distanceInKm > MAX_RADIUS) {
                 setDirections(null);
@@ -110,10 +135,9 @@ const MapPage = () => {
   };
 
   useEffect(() => {
-    if (pickup && dropoff) {
-      calculateRoute();
-    }
-  }, [pickup, dropoff]);
+   
+}, [pickup, dropoff, pickupCoords, dropoffCoords]);
+  
 
   return (
     <div style={{ fontFamily: 'Inter', padding: '20px' }}>
@@ -121,8 +145,6 @@ const MapPage = () => {
 
       <LoadScript
         googleMapsApiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
-
-
         libraries={['places']}
       >
         <GoogleMap
@@ -137,8 +159,6 @@ const MapPage = () => {
         <div>
           <GooglePlacesAutocomplete
             apiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
-
-
             selectProps={{
               value: pickup,
               onChange: onPlaceChangedPickup,
@@ -154,7 +174,9 @@ const MapPage = () => {
             }}
           />
         </div>
+      
       </LoadScript>
+
       <button onClick={calculateRoute} className='button1'>Calculate Route</button>
       {duration && <div>Estimated Time: {duration}</div>}
       {fare > 0 && <div>Estimated Fare: ₹{fare}</div>}

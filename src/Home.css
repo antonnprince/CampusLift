@@ -19,17 +19,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin: auto; /* Center the container horizontally */
+    /*margin: auto; /* Center the container horizontally */
   }
   
   /* styles.css or Home.module.css */
 .map-markers {
     position: absolute;
-    top: 10px;
-    width: 100%;
+    width: 1000%;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    
   }
   
   .map-marker {
@@ -84,7 +83,7 @@
   }
   
   .car-white {
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     left: 50px;
   }
   
@@ -96,6 +95,7 @@
 .big-text {
   font-size: 3em; /* You can adjust the size as needed */
   font-weight: bold; /* Optional: Makes the text bold */
+  color: white;
 }
 
   

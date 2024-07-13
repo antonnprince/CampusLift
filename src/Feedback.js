@@ -15,7 +15,7 @@ const Feedback = () => {
     }
     setSubmitted(true);
     setTimeout(() => {
-      navigate("/");
+      navigate("/MapPage");
     }, 3000);
   };
 

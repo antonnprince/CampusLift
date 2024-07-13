@@ -1,70 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import './RiderDashboard.css'; // You'll need to create this CSS file
+import io from "socket.io-client";
+import { useNavigate } from 'react-router-dom';
 
 const RiderDashboard = () => {
+  const navigate = useNavigate()
   const [rideRequests, setRideRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Mock function to fetch ride requests
-  const fetchRideRequests = async () => {
-    // In a real application, this would be an API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          { id: 1, pickup: "123 Main St", dropoff: "456 Elm St", fare: 150, status: "pending" },
-          { id: 2, pickup: "789 Oak Ave", dropoff: "321 Pine Rd", fare: 200, status: "pending" },
-          { id: 3, pickup: "555 Cedar Ln", dropoff: "777 Maple Dr", fare: 175, status: "pending" },
-        ]);
-      }, 1000); // Simulate network delay
-    });
-  };
-
+  const [socket, setSocket] = useState(null);
+  const [socketId, setSocketId] = useState('');
+  const [requestId, setRequestId]=useState("")
   useEffect(() => {
-    const getRideRequests = async () => {
-      try {
-        const data = await fetchRideRequests();
-        setRideRequests(data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch ride requests');
-        setLoading(false);
-      }
-    };
+    const newSocket = io("http://localhost:3000", {
+      transports: ["websocket"]
+    });
 
-    getRideRequests();
+    newSocket.on("connect", () => {
+      console.log("Rider connected");
+      setSocketId(newSocket.id);
+    });
+
+    newSocket.on("rideRequestDetails", (details) => {
+      console.log("Ride request details received:", details);
+      setRideRequests(details);
+      setLoading(false);
+    });
+
+    newSocket.on("disconnect", () => {
+      console.log("Rider disconnected");
+    });
+
+    setSocket(newSocket);
+
+    return () => newSocket.disconnect();
   }, []);
-
-  const handleAcceptRide = (id) => {
-    // In a real application, this would update the ride status in the backend
-    setRideRequests(rideRequests.map(ride => 
-      ride.id === id ? { ...ride, status: 'accepted' } : ride
-    ));
-  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const acceptRide=()=>{
+    socket.emit("acceptRide", {requestId:requestId,driverId:socketId})
+      const data = {
+          driverId:socketId,
+      }
+    socket.emit("getRiderDetails",data)
+    }
+
   return (
     <div className="rider-dashboard">
       <h1 className="heading">Pending Ride Requests</h1>
+      
       {rideRequests.length === 0 ? (
         <p>No pending ride requests at the moment.</p>
       ) : (
         <ul className="ride-request-list">
-          {rideRequests.map(ride => (
+          {rideRequests.map((ride) => (
             <li key={ride.id} className="ride-request-item">
               <div className="ride-details">
-                <p><strong>Pickup:</strong> {ride.pickup}</p>
-                <p><strong>Dropoff:</strong> {ride.dropoff}</p>
-                <p><strong>Fare:</strong> ₹{ride.fare}</p>
-                <p><strong>Status:</strong> {ride.status}</p>
+                <p><strong>Pickup:</strong>{ride.pickup}</p>
+                <p><strong>Dropoff:</strong>{ride.dropoff}</p>
               </div>
-              {ride.status === 'pending' && (
-                <button onClick={() => handleAcceptRide(ride.id)} className="accept-button">
-                  Accept Ride
-                </button>
-              )}
+
+              <button onClick={()=>{navigate("/riderD")}} className="accept-button">
+                Accept Ride
+              </button>
             </li>
           ))}
         </ul>
