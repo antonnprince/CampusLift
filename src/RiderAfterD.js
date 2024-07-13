@@ -35,7 +35,7 @@ const RideafterD = () => {
   ];
 
   const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0",
+    googleMapsApiKey: "Api key",
     libraries
   });
 

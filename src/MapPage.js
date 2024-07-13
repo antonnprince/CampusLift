@@ -144,7 +144,7 @@ const MapPage = () => {
       <h1 style={{ fontFamily: 'Inter', fontWeight: 'Bold', fontSize: '30px' }}>Let's start the ride</h1>
 
       <LoadScript
-        googleMapsApiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
+        googleMapsApiKey='API KEY'
         libraries={['places']}
       >
         <GoogleMap
@@ -158,7 +158,7 @@ const MapPage = () => {
         </GoogleMap>
         <div>
           <GooglePlacesAutocomplete
-            apiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
+            apiKey='API KEY'
             selectProps={{
               value: pickup,
               onChange: onPlaceChangedPickup,
@@ -166,7 +166,7 @@ const MapPage = () => {
             }}
           />
           <GooglePlacesAutocomplete
-            apiKey='AIzaSyBvRXLxeGTr5AwjgjtaHK5Emdgtyz6A6U0'
+            apiKey='Api key'
             selectProps={{
               value: dropoff,
               onChange: onPlaceChangedDropoff,
