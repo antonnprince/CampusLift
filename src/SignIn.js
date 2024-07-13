@@ -53,18 +53,6 @@ const SignIn = () => {
       });
   };
 
-  const storePhoneNumber = async (phoneNumber) => {
-    try {
-      const res = await axios.post("http://localhost:3000/login", {
-        phoneNumber: ph,
-      });
-      return res.status; // Return the status code
-    } catch (error) {
-      console.error("Error storing phone number:", error);
-      throw error;
-    }
-  };
-
   const onOTPVerify = async () => {
     setLoading(true);
     window.confirmationResult
@@ -90,6 +78,7 @@ const SignIn = () => {
         toast.error("Invalid OTP");
       });
   };
+
 
   return (
     <div>
